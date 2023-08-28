@@ -36,7 +36,7 @@ module.exports = (app) => {
         req.method +
         " -- " +
         "PATH: " +
-        req.href() +
+        
         " -- " +
         "STATUS: " +
         res.statusCode +

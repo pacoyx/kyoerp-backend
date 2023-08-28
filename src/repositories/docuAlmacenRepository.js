@@ -1,10 +1,39 @@
 const auroraPool = require("../config/db/auroraConnection");
 
-exports.getLogSistema = async function (query) {
+exports.getDocuAlmacen = async function (query) {
   try {
     const SP_PARAMETERS = [];
-    const SP_QUERY = "CALL SP_S_LOG_SISTEMA();";
+    const SP_QUERY = "CALL SP_S_DOCU_ALMACEN();";
     const [affectedRows] = await auroraPool.queryAsync(SP_QUERY, SP_PARAMETERS);
+    if (affectedRows.length > 0) {
+      return {
+        estado: true,
+
+        data: affectedRows,
+      };
+    } else {
+      return {
+        estado: false,
+        data: [],
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    return {
+      estado: false,
+      error: error,
+    };
+  }
+};
+
+
+exports.getByIdDocuAlmacen = async function (query) {
+  console.log('query==>',query);
+  try {
+    const SP_PARAMETERS = [query.codigo];
+    const SP_QUERY = "CALL SP_S_BYID_DOCU_ALMACEN(?);";
+    const [affectedRows] = await auroraPool.queryAsync(SP_QUERY, SP_PARAMETERS);
+    console.log('affectedRows==>',affectedRows);
     if (affectedRows.length > 0) {
       return {
         estado: true,
@@ -25,15 +54,16 @@ exports.getLogSistema = async function (query) {
   }
 };
 
-exports.registerLogSistema = async function (query) {
+
+exports.registerDocuAlmacen = async function (query) {
   try {
     const SP_PARAMETERS = [
-      query.modulo,
-      query.tipo,
-      query.usuario,
-      query.mensaje,
+      query.codigo,
+      query.descripcion,
+      query.estado,
+      query.codigo_sunat,
     ];
-    const SP_QUERY = "CALL SP_I_LOG_SISTEMA(?,?,?,?);";
+    const SP_QUERY = "CALL SP_I_DOCU_ALMACEN(?,?,?,?);";
     const respdb = await auroraPool.queryAsync(SP_QUERY, SP_PARAMETERS);
     console.log('affectedRows==>',respdb);
     if (respdb.affectedRows > 0) {
@@ -57,17 +87,16 @@ exports.registerLogSistema = async function (query) {
 };
 
 
-exports.actualizarLogSistema = async function (query) {
+exports.actualizarDocuAlmacen = async function (query) {
   console.log("parametros queryRepo", query)
   try {
     const SP_PARAMETERS = [
-      query.id,
-      query.modulo,
-      query.tipo,
-      query.usuario,
-      query.mensaje,
+        query.codigo,
+        query.descripcion,
+        query.estado,
+        query.codigo_sunat,
     ];
-    const SP_QUERY = "CALL SP_U_LOG_SISTEMA(?,?,?,?,?);";
+    const SP_QUERY = "CALL SP_U_DOCU_ALMACEN(?,?,?,?);";
     const respdb = await auroraPool.queryAsync(SP_QUERY, SP_PARAMETERS);
     console.log('affectedRows==>',respdb);
     if (respdb.affectedRows > 0) {
@@ -91,12 +120,12 @@ exports.actualizarLogSistema = async function (query) {
 };
 
 
-exports.eliminarLogSistema = async function (query) {
+exports.eliminarDocuAlmacen = async function (query) {
   try {
     const SP_PARAMETERS = [
-      query.id,
+      query.codigo,
     ];
-    const SP_QUERY = "CALL SP_D_LOG_SISTEMA(?);";
+    const SP_QUERY = "CALL SP_D_DOCU_ALMACEN(?);";
     const respdb = await auroraPool.queryAsync(SP_QUERY, SP_PARAMETERS);
     console.log('affectedRows==>',respdb);
     if (respdb.affectedRows > 0) {
@@ -118,5 +147,3 @@ exports.eliminarLogSistema = async function (query) {
     };
   }
 };
-
-

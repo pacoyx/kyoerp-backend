@@ -1,9 +1,9 @@
 const auroraPool = require("../config/db/auroraConnection");
 
-exports.getLogSistema = async function (query) {
+exports.getRol = async function (query) {
   try {
     const SP_PARAMETERS = [];
-    const SP_QUERY = "CALL SP_S_LOG_SISTEMA();";
+    const SP_QUERY = "CALL SP_S_ROL();";
     const [affectedRows] = await auroraPool.queryAsync(SP_QUERY, SP_PARAMETERS);
     if (affectedRows.length > 0) {
       return {
@@ -25,15 +25,42 @@ exports.getLogSistema = async function (query) {
   }
 };
 
-exports.registerLogSistema = async function (query) {
+
+exports.getByIdRol = async function (query) {
+  console.log('query==>',query);
+  try {
+    const SP_PARAMETERS = [query.idrol];
+    const SP_QUERY = "CALL SP_S_BYID_ROL(?);";
+    const [affectedRows] = await auroraPool.queryAsync(SP_QUERY, SP_PARAMETERS);
+    console.log('affectedRows==>',affectedRows);
+    if (affectedRows.length > 0) {
+      return {
+        estado: true,
+        data: affectedRows,
+      };
+    } else {
+      return {
+        estado: false,
+        data: [],
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    return {
+      estado: false,
+      error: error,
+    };
+  }
+};
+
+
+exports.registerRol = async function (query) {
   try {
     const SP_PARAMETERS = [
-      query.modulo,
-      query.tipo,
-      query.usuario,
-      query.mensaje,
+      query.descripcion,
+      query.estado,
     ];
-    const SP_QUERY = "CALL SP_I_LOG_SISTEMA(?,?,?,?);";
+    const SP_QUERY = "CALL SP_I_ROL(?,?);";
     const respdb = await auroraPool.queryAsync(SP_QUERY, SP_PARAMETERS);
     console.log('affectedRows==>',respdb);
     if (respdb.affectedRows > 0) {
@@ -57,17 +84,15 @@ exports.registerLogSistema = async function (query) {
 };
 
 
-exports.actualizarLogSistema = async function (query) {
+exports.actualizarRol = async function (query) {
   console.log("parametros queryRepo", query)
   try {
     const SP_PARAMETERS = [
-      query.id,
-      query.modulo,
-      query.tipo,
-      query.usuario,
-      query.mensaje,
+      query.idrol,
+      query.descripcion,
+      query.estado,
     ];
-    const SP_QUERY = "CALL SP_U_LOG_SISTEMA(?,?,?,?,?);";
+    const SP_QUERY = "CALL SP_U_ROL(?,?,?);";
     const respdb = await auroraPool.queryAsync(SP_QUERY, SP_PARAMETERS);
     console.log('affectedRows==>',respdb);
     if (respdb.affectedRows > 0) {
@@ -91,12 +116,12 @@ exports.actualizarLogSistema = async function (query) {
 };
 
 
-exports.eliminarLogSistema = async function (query) {
+exports.eliminarRol = async function (query) {
   try {
     const SP_PARAMETERS = [
-      query.id,
+      query.idrol,
     ];
-    const SP_QUERY = "CALL SP_D_LOG_SISTEMA(?);";
+    const SP_QUERY = "CALL SP_D_ROL(?);";
     const respdb = await auroraPool.queryAsync(SP_QUERY, SP_PARAMETERS);
     console.log('affectedRows==>',respdb);
     if (respdb.affectedRows > 0) {

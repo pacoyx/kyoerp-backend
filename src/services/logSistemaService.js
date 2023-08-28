@@ -42,3 +42,50 @@ exports.registerLogSistema = async function (body) {
 
   return respOk;
 };
+
+
+
+exports.actualizarLogSistema = async function (body) {
+  const query = {
+    id: body.id,
+    modulo: body.modu,
+    tipo: body.tip,
+    usuario: body.usu,
+    mensaje: body.men,
+  };
+  const respLog = await logSistemaRepository.actualizarLogSistema(query);
+  if (!respLog.estado) {
+    const resp = {
+      codigoRespuesta: "99",
+      error: respLog.error,
+    };
+    return resp;
+  }
+
+  const respOk = {
+    codigoRespuesta: "00",
+    data: 'log actualizado',
+  };
+
+  return respOk;
+};
+
+
+exports.eliminarLogSistema = async function (body) {
+  const query = {id: body.id};
+  const respLog = await logSistemaRepository.eliminarLogSistema(query);
+  if (!respLog.estado) {
+    const resp = {
+      codigoRespuesta: "99",
+      error: respLog.error,
+    };
+    return resp;
+  }
+
+  const respOk = {
+    codigoRespuesta: "00",
+    data: respLog.data,
+  };
+
+  return respOk;
+};
