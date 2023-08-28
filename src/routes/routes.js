@@ -42,6 +42,10 @@ module.exports = async function (app) {
 //   app.post("/getLogSistema", logSistemaController.getLogSistema);
 //   app.post("/registerLogSistema", logSistemaController.registerLogSistema);
 
+
+//falta el modulo de usuario
+
+
   app.post("/register", register);
   app.post("/login", login);
   app.post("/refresh", refresh);
